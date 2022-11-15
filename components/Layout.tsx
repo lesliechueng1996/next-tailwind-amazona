@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Store } from '../utils/store';
 
 export default function Layout({
   children,
@@ -9,6 +10,12 @@ export default function Layout({
   children: ReactNode;
   title?: string;
 }) {
+  const storeContext = useContext(Store);
+  if (!storeContext) {
+    return <div>This Component should in the StoreProvider</div>;
+  }
+  const { state } = storeContext;
+
   return (
     <>
       <Head>
@@ -25,6 +32,11 @@ export default function Layout({
             <div>
               <Link href="/cart" className="p-2">
                 Cart
+                <span className="rounded-full bg-red-600 text-white px-2 py-1 font-bold text-xs ml-1">
+                  {state.cart.reduce<number>((preValue, currValue) => {
+                    return preValue + currValue.quantity;
+                  }, 0)}
+                </span>
               </Link>
               <Link href="/login" className="p-2">
                 Login

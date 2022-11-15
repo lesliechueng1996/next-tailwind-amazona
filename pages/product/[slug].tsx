@@ -1,17 +1,40 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import Layout from '../../components/Layout';
 import data from '../../utils/data';
+import { Store, StoreActionEnum } from '../../utils/store';
 
 export default function ProductDetail() {
   const router = useRouter();
   const { slug } = router.query;
   const product = data.products.find((item) => item.slug === slug);
+  const storeContext = useContext(Store);
+  if (!storeContext) {
+    return <div>This Component should in the StoreProvider</div>;
+  }
+  const { state, dispatch } = storeContext;
 
   if (!product) {
     return <div>No Product</div>;
   }
+
+  const addProductToCart = () => {
+    const existProduct = state.cart.find((item) => item.slug === slug);
+    const quantity = existProduct ? existProduct.quantity + 1 : 1;
+    if (quantity > product.countInStock) {
+      alert('Sorry. Product is out of stock');
+      return;
+    }
+    dispatch({
+      type: StoreActionEnum.CART_ADD_ITEM,
+      payload: {
+        ...product,
+        quantity,
+      },
+    });
+  };
 
   return (
     <Layout title={product.name}>
@@ -52,7 +75,12 @@ export default function ProductDetail() {
                 </span>
               </div>
               <div>
-                <button className="primary-button w-full">Add to cart</button>
+                <button
+                  className="primary-button w-full"
+                  onClick={addProductToCart}
+                >
+                  Add to cart
+                </button>
               </div>
             </div>
           </div>
