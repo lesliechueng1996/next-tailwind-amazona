@@ -18,13 +18,19 @@ interface StoreType {
   cart: Array<CartType>;
 }
 
-export const Store = createContext<
-  { state: StoreType; dispatch: Dispatch<StoreAction> } | undefined
->(undefined);
-
 const initValue: StoreType = {
   cart: [],
 };
+
+export const Store = createContext<{
+  state: StoreType;
+  dispatch: Dispatch<StoreAction>;
+}>({
+  state: initValue,
+  dispatch: () => {
+    /** noop */
+  },
+});
 
 const reducer = (state: StoreType, action: StoreAction) => {
   switch (action.type) {

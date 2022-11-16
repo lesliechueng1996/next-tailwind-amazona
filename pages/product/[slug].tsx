@@ -10,11 +10,7 @@ export default function ProductDetail() {
   const router = useRouter();
   const { slug } = router.query;
   const product = data.products.find((item) => item.slug === slug);
-  const storeContext = useContext(Store);
-  if (!storeContext) {
-    return <div>This Component should in the StoreProvider</div>;
-  }
-  const { state, dispatch } = storeContext;
+  const { state, dispatch } = useContext(Store);
 
   if (!product) {
     return <div>No Product</div>;

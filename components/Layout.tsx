@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Store } from '../utils/store';
@@ -10,11 +10,15 @@ export default function Layout({
   children: ReactNode;
   title?: string;
 }) {
+  const [totalCount, setTotalCount] = useState<number>(0);
   const storeContext = useContext(Store);
-  if (!storeContext) {
-    return <div>This Component should in the StoreProvider</div>;
-  }
-  const { state } = storeContext;
+  const { cart } = storeContext.state;
+  useEffect(() => {
+    const temp = cart.reduce<number>((preValue, currValue) => {
+      return preValue + currValue.quantity;
+    }, 0);
+    setTotalCount(temp);
+  }, [cart]);
 
   return (
     <>
@@ -32,11 +36,11 @@ export default function Layout({
             <div>
               <Link href="/cart" className="p-2">
                 Cart
-                <span className="rounded-full bg-red-600 text-white px-2 py-1 font-bold text-xs ml-1">
-                  {state.cart.reduce<number>((preValue, currValue) => {
-                    return preValue + currValue.quantity;
-                  }, 0)}
-                </span>
+                {totalCount > 0 ? (
+                  <span className="rounded-full bg-red-600 text-white px-2 py-1 font-bold text-xs ml-1">
+                    {totalCount}
+                  </span>
+                ) : null}
               </Link>
               <Link href="/login" className="p-2">
                 Login
