@@ -3,6 +3,7 @@ import { Product } from './data';
 
 export enum StoreActionEnum {
   CART_ADD_ITEM = 'CART_ADD_ITEM',
+  CART_REMOVE_ITEM = 'CART_REMOVE_ITEM',
 }
 
 interface CartType extends Product {
@@ -10,7 +11,7 @@ interface CartType extends Product {
 }
 
 export type StoreAction = {
-  type: StoreActionEnum.CART_ADD_ITEM;
+  type: StoreActionEnum;
   payload: CartType;
 };
 
@@ -35,22 +36,31 @@ export const Store = createContext<{
 const reducer = (state: StoreType, action: StoreAction) => {
   switch (action.type) {
     case StoreActionEnum.CART_ADD_ITEM:
-      const CartType = action.payload;
-      const index = state.cart.findIndex((item) => item.slug === CartType.slug);
+      const product = action.payload;
+      const index = state.cart.findIndex((item) => item.slug === product.slug);
       if (index >= 0) {
         const newCart = [...state.cart];
-        newCart[index] = CartType;
+        newCart[index] = product;
         return {
           ...state,
           cart: newCart,
         };
       } else {
-        const newCart = [...state.cart, CartType];
+        const newCart = [...state.cart, product];
         return {
           ...state,
           cart: newCart,
         };
       }
+    case StoreActionEnum.CART_REMOVE_ITEM:
+      const removeProduct = action.payload;
+      const newCart = state.cart.filter(
+        (item) => item.slug !== removeProduct.slug
+      );
+      return {
+        ...state,
+        cart: newCart,
+      };
     default:
       return state;
   }
