@@ -16,11 +16,15 @@ export type StoreAction = {
 };
 
 interface StoreType {
-  cart: Array<CartType>;
+  cart: {
+    cartItems: Array<CartType>;
+  };
 }
 
 const initValue: StoreType = {
-  cart: [],
+  cart: {
+    cartItems: [],
+  },
 };
 
 export const Store = createContext<{
@@ -37,29 +41,40 @@ const reducer = (state: StoreType, action: StoreAction) => {
   switch (action.type) {
     case StoreActionEnum.CART_ADD_ITEM:
       const product = action.payload;
-      const index = state.cart.findIndex((item) => item.slug === product.slug);
+      const index = state.cart.cartItems.findIndex(
+        (item) => item.slug === product.slug
+      );
       if (index >= 0) {
-        const newCart = [...state.cart];
+        const newCart = [...state.cart.cartItems];
         newCart[index] = product;
         return {
           ...state,
-          cart: newCart,
+          cart: {
+            ...state.cart,
+            cartItems: newCart,
+          },
         };
       } else {
-        const newCart = [...state.cart, product];
+        const newCart = [...state.cart.cartItems, product];
         return {
           ...state,
-          cart: newCart,
+          cart: {
+            ...state.cart,
+            cartItems: newCart,
+          },
         };
       }
     case StoreActionEnum.CART_REMOVE_ITEM:
       const removeProduct = action.payload;
-      const newCart = state.cart.filter(
+      const newCart = state.cart.cartItems.filter(
         (item) => item.slug !== removeProduct.slug
       );
       return {
         ...state,
-        cart: newCart,
+        cart: {
+          ...state.cart,
+          cartItems: newCart,
+        },
       };
     default:
       return state;

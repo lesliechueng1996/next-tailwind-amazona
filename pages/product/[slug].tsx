@@ -17,7 +17,9 @@ export default function ProductDetail() {
   }
 
   const addProductToCart = () => {
-    const existProduct = state.cart.find((item) => item.slug === slug);
+    const existProduct = state.cart.cartItems.find(
+      (item) => item.slug === slug
+    );
     const quantity = existProduct ? existProduct.quantity + 1 : 1;
     if (quantity > product.countInStock) {
       alert('Sorry. Product is out of stock');

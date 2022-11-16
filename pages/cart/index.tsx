@@ -22,7 +22,7 @@ export default function CartScreen() {
     <Layout title="Shopping Cart">
       <div>
         <p className="mb-4 text-xl">Shopping Cart</p>
-        {state.cart.length === 0 ? (
+        {state.cart.cartItems.length === 0 ? (
           <div>
             Cart is empty. <Link href="/">Go shopping</Link>
           </div>
@@ -39,7 +39,7 @@ export default function CartScreen() {
                   </tr>
                 </thead>
                 <tbody>
-                  {state.cart.map((item) => (
+                  {state.cart.cartItems.map((item) => (
                     <tr key={item.slug} className="border-b">
                       <td className="p-5 text-left">
                         <Link
@@ -94,15 +94,21 @@ export default function CartScreen() {
               <div className="card p-5">
                 <div className="mb-3 text-xl">
                   Subtotal(
-                  {state.cart.reduce((preValue: number, currentValue) => {
-                    return preValue + currentValue.quantity;
-                  }, 0)}
+                  {state.cart.cartItems.reduce(
+                    (preValue: number, currentValue) => {
+                      return preValue + currentValue.quantity;
+                    },
+                    0
+                  )}
                   ): $
-                  {state.cart.reduce((preValue: number, currentValue) => {
-                    return (
-                      preValue + currentValue.quantity * currentValue.price
-                    );
-                  }, 0)}
+                  {state.cart.cartItems.reduce(
+                    (preValue: number, currentValue) => {
+                      return (
+                        preValue + currentValue.quantity * currentValue.price
+                      );
+                    },
+                    0
+                  )}
                 </div>
                 <button className="primary-button w-full">Check Out</button>
               </div>

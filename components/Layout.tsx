@@ -11,10 +11,10 @@ export default function Layout({
   title?: string;
 }) {
   const [totalCount, setTotalCount] = useState<number>(0);
-  const storeContext = useContext(Store);
-  const { cart } = storeContext.state;
+  const { state } = useContext(Store);
+  const { cart } = state;
   useEffect(() => {
-    const temp = cart.reduce<number>((preValue, currValue) => {
+    const temp = cart.cartItems.reduce<number>((preValue, currValue) => {
       return preValue + currValue.quantity;
     }, 0);
     setTotalCount(temp);
