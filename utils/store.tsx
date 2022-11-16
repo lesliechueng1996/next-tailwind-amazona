@@ -1,5 +1,6 @@
 import { createContext, Dispatch, ReactNode, useReducer } from 'react';
 import { Product } from './data';
+import Cookies from 'js-cookie';
 
 export enum StoreActionEnum {
   CART_ADD_ITEM = 'CART_ADD_ITEM',
@@ -21,10 +22,13 @@ interface StoreType {
   };
 }
 
+const cookieCart = Cookies.get('cart');
 const initValue: StoreType = {
-  cart: {
-    cartItems: [],
-  },
+  cart: cookieCart
+    ? JSON.parse(cookieCart)
+    : {
+        cartItems: [],
+      },
 };
 
 export const Store = createContext<{
@@ -47,6 +51,13 @@ const reducer = (state: StoreType, action: StoreAction) => {
       if (index >= 0) {
         const newCart = [...state.cart.cartItems];
         newCart[index] = product;
+        Cookies.set(
+          'cart',
+          JSON.stringify({
+            ...state.cart,
+            cartItems: newCart,
+          })
+        );
         return {
           ...state,
           cart: {
@@ -56,6 +67,13 @@ const reducer = (state: StoreType, action: StoreAction) => {
         };
       } else {
         const newCart = [...state.cart.cartItems, product];
+        Cookies.set(
+          'cart',
+          JSON.stringify({
+            ...state.cart,
+            cartItems: newCart,
+          })
+        );
         return {
           ...state,
           cart: {
@@ -68,6 +86,13 @@ const reducer = (state: StoreType, action: StoreAction) => {
       const removeProduct = action.payload;
       const newCart = state.cart.cartItems.filter(
         (item) => item.slug !== removeProduct.slug
+      );
+      Cookies.set(
+        'cart',
+        JSON.stringify({
+          ...state.cart,
+          cartItems: newCart,
+        })
       );
       return {
         ...state,

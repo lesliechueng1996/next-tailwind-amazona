@@ -4,8 +4,9 @@ import { Store, StoreActionEnum, CartType } from '../../utils/store';
 import Image from 'next/image';
 import Link from 'next/link';
 import { XCircleIcon } from '@heroicons/react/24/outline';
+import dynamic from 'next/dynamic';
 
-export default function CartScreen() {
+function CartScreen() {
   const { state, dispatch } = useContext(Store);
 
   const updateQuatity = (cartItem: CartType, qty: string) => {
@@ -119,3 +120,9 @@ export default function CartScreen() {
     </Layout>
   );
 }
+
+const CartScreenNoSSR = dynamic(() => Promise.resolve(CartScreen), {
+  ssr: false,
+});
+
+export default CartScreenNoSSR;
