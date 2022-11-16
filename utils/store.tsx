@@ -6,7 +6,7 @@ export enum StoreActionEnum {
   CART_REMOVE_ITEM = 'CART_REMOVE_ITEM',
 }
 
-interface CartType extends Product {
+export interface CartType extends Product {
   quantity: number;
 }
 

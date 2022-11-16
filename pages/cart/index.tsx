@@ -1,12 +1,22 @@
 import { useContext } from 'react';
 import Layout from '../../components/Layout';
-import { Store, StoreActionEnum } from '../../utils/store';
+import { Store, StoreActionEnum, CartType } from '../../utils/store';
 import Image from 'next/image';
 import Link from 'next/link';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 
 export default function CartScreen() {
   const { state, dispatch } = useContext(Store);
+
+  const updateQuatity = (cartItem: CartType, qty: string) => {
+    dispatch({
+      type: StoreActionEnum.CART_ADD_ITEM,
+      payload: {
+        ...cartItem,
+        quantity: Number(qty),
+      },
+    });
+  };
 
   return (
     <Layout title="Shopping Cart">
@@ -46,7 +56,22 @@ export default function CartScreen() {
                           <span>{item.name}</span>
                         </Link>
                       </td>
-                      <td className="text-right">{item.quantity}</td>
+                      <td className="text-right">
+                        <select
+                          value={item.quantity}
+                          onChange={(e) => {
+                            updateQuatity(item, e.target.value);
+                          }}
+                        >
+                          {Array.from(Array(item.countInStock).keys()).map(
+                            (i) => (
+                              <option key={i + 1} value={i + 1}>
+                                {i + 1}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </td>
                       <td className="text-right">${item.price}</td>
                       <td className="text-center">
                         <button
